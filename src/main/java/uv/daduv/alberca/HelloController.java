@@ -3,10 +3,7 @@ package uv.daduv.alberca;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import uv.daduv.domain.Deportista;
 import uv.daduv.utils.ExcelWriter;
 import uv.daduv.utils.ExceptionHandler;
@@ -43,10 +40,16 @@ public class HelloController implements Initializable {
     }
 
     public void clicGuardar(ActionEvent actionEvent) {
-        try {
-            guardarDeportistaEnExcel(deportista, "bdDeportistas.xlsx");
-        } catch (IOException e) {
-            ExceptionHandler.handleException(e);
+        if (camposValidos()) {
+            try {
+                guardarDeportistaEnExcel(deportista, "bdDeportistas.xlsx");
+                mostrarVentanaExito();
+                limpiarCampos();
+            } catch (IOException e) {
+                ExceptionHandler.handleException(e);
+            }
+        } else {
+            mostrarVentanaCamposVacios();
         }
     }
 
@@ -117,4 +120,54 @@ public class HelloController implements Initializable {
             deportista.setSexo(newValue);
         });
     }
+    private void mostrarVentanaExito() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Operación Exitosa");
+        alert.setHeaderText("Se ha guardado un deportista en la base de datos");
+        alert.setContentText("Se han guardado los registros " + "\n"+
+                "Código" + deportista.getId() + "\n"+
+                "Correo " + deportista.getCorreo() + "\n"+
+                "Nombre " + deportista.getNombre() + "\n"+
+                "Sexo " + deportista.getSexo() + "\n"+
+                "Tipo " + deportista.getTipo() + "\n"+
+                "Horario " + deportista.getHorario() + "\n"+
+                "Teléfono " + deportista.getTelefono() + "\n"+
+                "Credencial " + deportista.getNoCredencial() + "\n"+
+                "Edad " + deportista.getEdad() + "\n"+
+                "Modalidad" + deportista.getModalidad()+ "\n");
+
+        alert.showAndWait();
+    }
+
+    private void mostrarVentanaCamposVacios(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Campos vacíos");
+        alert.setHeaderText("Por favor, llene todos los campos para continuar");
+        alert.setContentText("Verifique los datos");
+
+        alert.showAndWait();
+    }
+    private boolean camposValidos() {
+        return !tfCódigo.getText().isEmpty() &&
+                !tfNombre.getText().isEmpty() &&
+                !tfTelefono.getText().isEmpty() &&
+                !tfEdad.getText().isEmpty() &&
+                !tfNoDeCredencial.getText().isEmpty() &&
+                !tfCorreo.getText().isEmpty();
+    }
+    private void limpiarCampos() {
+        tfCódigo.clear();
+        tfNombre.clear();
+        tfTelefono.clear();
+        tfEdad.clear();
+        tfNoDeCredencial.clear();
+        tfCorreo.clear();
+        // También puedes restablecer los valores de los ChoiceBox si es necesario.
+        cbTipo.setValue("Estudiante UV");
+        cbModalidad.setValue("Libre");
+        cbHorario.setValue("6:00 6:50");
+        cbSexo.setValue("Masculino");
+    }
+
+
 }
