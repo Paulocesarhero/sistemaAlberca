@@ -1,0 +1,9 @@
+
+.text-field {
+    -fx-pref-height: 26.0;
+    -fx-pref-width: 150.0;
+}
+.action-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
